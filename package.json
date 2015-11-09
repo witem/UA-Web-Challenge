@@ -1,0 +1,25 @@
+{
+  "name": "uawc-2015",
+  "version": "0.0.0",
+  "private": true,
+  "description": "service to make image collages with twitter avatars",
+  "main": "index.js",
+  "dependencies": {
+    "async": "~1.4.2",
+    "canvas": "~1.2.8",
+    "express": "~4.13.3",
+    "primus": "~3.2.3",
+    "request": "^2.65.0",
+    "socket.io": "~0.9.17",
+    "twitter": "~1.2.5"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "engines": {
+    "node": ">=0.8.0 <3"
+  },
+  "license": "BSD-2-Clause"
+}

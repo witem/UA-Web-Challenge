@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>UA Web Challenge VIII - Back-end - Junior</title>
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+        }
+        .wrapper {
+            padding: 10px 5px;
+            min-width: 250px;
+        }
+        h3 {
+            text-align: center;
+            margin: 0 0 10px;
+        }
+        .form {
+            width: 250px;
+            margin: 0 auto;
+        }
+        .form input {
+            width: 100%;
+            padding: 3px 5px;
+            margin-bottom: 10px;
+            -webkit-box-sizing: border-box;
+            -moz-box-sizing: border-box;
+            box-sizing: border-box;
+        }
+        .form button {
+            display: block;
+            margin: 0 auto 10px;
+        }
+        .status {
+            min-height: 30px;
+            padding: 5px 10px;
+            text-align: center;
+            font-weight: bold;
+            color: #227D07;
+        }
+        .status.error {
+            color: #B53C3C;
+        }
+        .collage {
+            text-align: center;
+            padding: 5px 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="wrapper">
+        <h3>UA Web Challenge VIII - Back-end - Junior</h3>
+        <form class="form" id="collage_get_form">
+            <label for="login">Login:</label><br>
+            <input id="login" name="login" type="text" required><br>
+            <label for="size">Collage size(2-60000):</label><br>
+            <input id="size" name="size" type="number" min="2" max="60000" value="200" required><br>
+            <button type="submit">Submit</button>
+        </form>
+        <div class="response">
+            <div class="status" id="res_status"></div>
+            <div class="collage" id="res_collage"></div>
+        </div>
+    </div>
+    <script src="/primus/primus.js"></script>
+    <script>
+        var primus = new Primus();
+
+        primus.on( "open", function () {
+            console.log("Connected!")
+        });
+
+        primus.on( "data", function ( data ) {
+            switch (data.switch) {
+                case "collage_img" :
+                    insert_img( data.src );
+                    break;
+                case "status" :
+                    insert_status( false, data.message );
+                    break;
+                case "error" :
+                    insert_status( true, data.message );
+                    break;
+                default :
+                    console.error( "NOT DEFINED RESPONSE", data );
+            }
+        });
+
+        document.getElementById( "collage_get_form" ).addEventListener( "submit", function( event ){
+            event.preventDefault();
+            primus.write({
+                "switch" : "/api/v1/collage_get",
+                "login" : this.elements.login.value,
+                "size" : this.elements.size.value
+            })
+        });
+
+        var insert_img = function(src){
+            var img = document.createElement( "img" );
+            img.setAttribute( "src", src );
+            document.getElementById( "res_collage" ).innerHTML = "";
+            document.getElementById( "res_collage" ).appendChild( img );
+        };
+
+        var insert_status = function(error, msg){
+            if (error) {
+                document.getElementById( "res_status" ).classList.add( "error" );
+            } else {
+                document.getElementById( "res_status" ).classList.remove( "error" );
+            }
+            document.getElementById( "res_status" ).textContent = msg;
+        };
+    </script>
+</body>
+</html>
